@@ -5,9 +5,17 @@ export default function Home() {
   const [originalUrl, setOriginalUrl] = useState("");
   const [shortUrl, setshortUrl] = useState("");
   const [shortUrlTag, setshortUrlTag] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (
+      !originalUrl.startsWith("http://") ||
+      !originalUrl.startsWith("https://")
+    ) {
+      setError("Please enter a valid URL with proper protocol prefix.");
+      return;
+    }
     const response = await fetch("/api/create/", {
       method: "POST",
       headers: {
@@ -41,7 +49,10 @@ export default function Home() {
           className="p-2 mr-2 border border-gray-300 text-black"
           type="text"
           value={originalUrl}
-          onChange={(e) => setOriginalUrl(e.target.value)}
+          onChange={(e) => {
+            setError("");
+            setOriginalUrl(e.target.value);
+          }}
           placeholder="Enter URL"
         />
         <button
@@ -58,6 +69,7 @@ export default function Home() {
           </a>
         </div>
       )}
+      {error && <div className="text-red-500 mt-4">{error}</div>}
     </div>
   );
 }

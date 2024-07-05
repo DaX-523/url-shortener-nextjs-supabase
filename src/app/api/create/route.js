@@ -1,26 +1,33 @@
 import { createClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
+import { NextResponse } from "next/server";
 
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_KEY
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
 );
 
-export default async function handler(req, res) {
-  if (req.method === "POST") {
-    const { originalUrl } = req.body;
+export async function POST(req, res) {
+  try {
+    const { originalUrl } = await req.json();
+
     const { data, error } = await supabase
       .from("urls")
-      .insert([{ id: nanoid(8), original_url: originalUrl }]);
+      .insert([{ id: nanoid(8), original_url: originalUrl }])
+      .select();
 
     if (error) {
-      return res.status(500).json({ error: error.message });
-    } else {
-      console.log(data);
-      const shortUrl = `${req.headers.host}/${data.id}`;
-      return res.status(201).json({ shortUrl });
+      console.error(error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
-  }
 
-  return res.status(405).json({ error: "Method not allowed" });
+    const shortUrl = `http://${req.headers.get("host")}/${data[0].id}`;
+    return NextResponse.json({ shortUrl }, { status: 201 });
+  } catch (error) {
+    console.error("Error processing request:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }

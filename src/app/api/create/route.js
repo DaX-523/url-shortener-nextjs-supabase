@@ -21,7 +21,7 @@ export async function POST(req, res) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const shortUrl = `http://${req.headers.get("host")}/${data[0].id}`;
+    const shortUrl = `https://${req.headers.get("host")}/${data[0].id}`;
     return NextResponse.json({ shortUrl }, { status: 201 });
   } catch (error) {
     console.error("Error processing request:", error);

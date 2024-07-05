@@ -4,6 +4,7 @@ import { useState } from "react";
 export default function Home() {
   const [originalUrl, setOriginalUrl] = useState("");
   const [shortUrl, setshortUrl] = useState("");
+  const [shortUrlTag, setshortUrlTag] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,7 +16,11 @@ export default function Home() {
       body: JSON.stringify({ originalUrl }),
     });
     const data = await response.json();
+    const tags = data.shortUrl.split("/");
+    const tag = tags[tags.length - 1];
+    console.log(tag);
     setshortUrl(data.shortUrl);
+    setshortUrlTag(tag);
   };
 
   const getValidUrl = (url) => {
@@ -49,7 +54,7 @@ export default function Home() {
       {shortUrl && (
         <div className="mt-4">
           <a href={shortUrl} target="_blank" rel="noopener noreferrer">
-            {shortUrl}
+            {`https://short-url/${shortUrlTag}`}
           </a>
         </div>
       )}

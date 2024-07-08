@@ -9,11 +9,7 @@ export default function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(
-      originalUrl,
-      !originalUrl.startsWith("http://"),
-      !originalUrl.startsWith("https://")
-    );
+
     if (
       !originalUrl.startsWith("http://") &&
       !originalUrl.startsWith("https://")
@@ -32,20 +28,9 @@ export default function Home() {
     const data = await response.json();
     const tags = data.shortUrl.split("/");
     const tag = tags[tags.length - 1];
-    console.log(tag);
     setshortUrl(data.shortUrl);
     setError("");
     setshortUrlTag(tag);
-  };
-
-  const getValidUrl = (url) => {
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-      return "http://" + url;
-    }
-    if (url.includes("http://") || url.includes("https://")) {
-      return url;
-    }
-    return `http://${url}`;
   };
 
   return (

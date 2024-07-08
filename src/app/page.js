@@ -9,11 +9,17 @@ export default function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(
+      originalUrl,
+      !originalUrl.startsWith("http://"),
+      !originalUrl.startsWith("https://")
+    );
     if (
-      !originalUrl.startsWith("http://") ||
+      !originalUrl.startsWith("http://") &&
       !originalUrl.startsWith("https://")
     ) {
       setError("Please enter a valid URL with proper protocol prefix.");
+      setshortUrl("");
       return;
     }
     const response = await fetch("/api/create/", {
@@ -28,6 +34,7 @@ export default function Home() {
     const tag = tags[tags.length - 1];
     console.log(tag);
     setshortUrl(data.shortUrl);
+    setError("");
     setshortUrlTag(tag);
   };
 
